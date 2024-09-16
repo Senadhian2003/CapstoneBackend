@@ -55,7 +55,7 @@ namespace CoffeeStoreManagementApp.Services
             await _coffeeRepository.Add(coffee);
 
             string fileExtension = Path.GetExtension(addNewCoffeeDTO.CoffeeImage.FileName);
-            string blobName = $"product-{coffee.Id}{fileExtension}";
+            string blobName = $"coffee-{coffee.Id}{fileExtension}";
             string imageUrl = await _blobService.UploadImageAsync(addNewCoffeeDTO.CoffeeImage, blobName);
 
             coffee.ImageURL = imageUrl;

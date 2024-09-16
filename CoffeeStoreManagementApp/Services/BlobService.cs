@@ -5,14 +5,17 @@ namespace CoffeeStoreManagementApp.Services
 {
     public class BlobService : IBlobService
     {
+        private readonly string _connectionString;
         private readonly BlobServiceClient _blobServiceClient;
         private readonly string _containerName;
 
-        public BlobService()
+        public BlobService(string connectionString, string containerName)
         {
-            string connectionString = "DefaultEndpointsProtocol=https;AccountName=senablobstorage;AccountKey=6DxOlRfp/yXDPbVzQz8RFKzFDagjwBI+qVQX38baMQ6ECGdiqxyApBpTtpNX2ffIvJN69aSbGI4l+AStZvuoFA==;EndpointSuffix=core.windows.net";
+            //_connectionString = "DefaultEndpointsProtocol=https;AccountName=senablobstorage;AccountKey=6DxOlRfp/yXDPbVzQz8RFKzFDagjwBI+qVQX38baMQ6ECGdiqxyApBpTtpNX2ffIvJN69aSbGI4l+AStZvuoFA==;EndpointSuffix=core.windows.net";
+            _connectionString = connectionString;
             _blobServiceClient = new BlobServiceClient(connectionString);
-            _containerName = "sena-blob-container";
+            //_containerName = "sena-blob-container";
+            _containerName = containerName;
         }
 
 

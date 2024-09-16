@@ -27,14 +27,23 @@ namespace CoffeeStoreManagementApp
             //var sqlSecretName = builder.Configuration["KeyVault:SecretNames:SqlSecret"];
 
             var onlinesql = builder.Configuration["KeyVault:SecretNames:OnlineSql"];
+            var offlinesql = builder.Configuration["KeyVault:SecretNames:SqlSecret"];
             var jwtSecretName = builder.Configuration["KeyVault:SecretNames:JwtSecret"];
+
+            var blobStringName = builder.Configuration["KeyVault:SecretNames:BlobString"];
+            var blobContainerName = builder.Configuration["KeyVault:SecretNames:BlobContainer"];
+
 
             var client = new SecretClient(new Uri(keyVaultUri), new DefaultAzureCredential());
 
             var sqlonlieSecret = await client.GetSecretAsync(onlinesql);
+            var sqlofflineSecret = await client.GetSecretAsync(offlinesql);
+
             var jwtSecret = await client.GetSecretAsync(jwtSecretName);
 
-          
+
+            var blobsecret = await client.GetSecretAsync(blobStringName);
+            var blobcontainersecret = await client.GetSecretAsync(blobContainerName);
 
 
             builder.Services.AddControllers();
@@ -119,14 +128,18 @@ namespace CoffeeStoreManagementApp
             builder.Services.AddScoped<IRepository<int, OrderDetailStatus>, OrderDetailStatusRepository>();
             #endregion
 
-            #region
+            #region Service Dependency Injection
             //builder.Services.AddScoped<ITokenService, TokenService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ICoffeeServices, CoffeeServices>();
             builder.Services.AddScoped<ICartServices, CartServices>();
             builder.Services.AddScoped<IOrderServices, OrderServices>();
             builder.Services.AddScoped<IAdminAuthService, AdminAuthService>();
-            builder.Services.AddScoped<IBlobService, BlobService>();
+            builder.Services.AddScoped<IBlobService>(provider =>
+            {
+
+                return new BlobService(blobsecret.Value.Value, blobcontainersecret.Value.Value);
+            });
             builder.Services.AddScoped<ITokenService>(provider =>
             {
 
